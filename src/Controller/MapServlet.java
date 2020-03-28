@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import model.TouristPlace;
 import service.ListOperations;
+import service.MapOperations;
 
 
 @WebServlet(urlPatterns= {"/map"})
@@ -29,25 +30,28 @@ public class MapServlet extends HttpServlet {
 		String destination = request.getParameter("travel");
 		String rank = request.getParameter("rank");
 		String add = request.getParameter("add");
-		
+		Map<String,TouristPlace> map=new HashMap<String,TouristPlace>();
 		String sortRandom = request.getParameter("sortrandomly");
 		String sortInEntryOrder = request.getParameter("sortinentryorder");
 		String sortAlphabetically = request.getParameter("sortalphabetically");
 		String remove = request.getParameter("delete");
 		String reset = request.getParameter("reset");
-			
+		
+		TouristPlace tc=new TouristPlace(name,destination,rank);
+		MapOperations mo=new MapOperations();
 		if(add!=null) {
 			// call the add method and store the return value in a map variable
-			
-			request.setAttribute("bucketList", /*return variable */);
+			map = mo.add(tc);
+			request.setAttribute("bucketList",map);
 			request.setAttribute("message", "user added successfully");
 			RequestDispatcher rd=this.getServletContext().getRequestDispatcher("/WEB-INF/views/list.jsp");
 			rd.forward(request, response);
 		}
 
 		if(remove!=null) {
+			map =mo.remove(tc);
 			// call the remove method and store the return value in a map variable
-			request.setAttribute("bucketList", /*return variable */);
+			request.setAttribute("bucketList", map);
 			RequestDispatcher rd=this.getServletContext().getRequestDispatcher("/WEB-INF/views/list.jsp");
 			rd.forward(request, response);
 		}
@@ -55,13 +59,15 @@ public class MapServlet extends HttpServlet {
 		
 		if(sortRandom!=null) {
 			// call the sortRandomly method and store the return value in a map variable
-			request.setAttribute("bucketList",/*return variable */);
+			map =mo.sortRandomly(tc);
+			request.setAttribute("bucketList",map);
 			RequestDispatcher rd=this.getServletContext().getRequestDispatcher("/WEB-INF/views/list.jsp");
 			rd.forward(request, response);
 		}
 
 		if(sortInEntryOrder!=null) {
 			// call the sortInEntryOrder and store the return value in a map variable
+			map =mo.sortInEntryOrder(tc);
 			request.setAttribute("bucketList", /*return variable */);
 			RequestDispatcher rd=this.getServletContext().getRequestDispatcher("/WEB-INF/views/list.jsp");
 			rd.forward(request, response);
